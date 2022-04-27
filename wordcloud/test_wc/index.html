@@ -5,13 +5,21 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Wordcloud</title>
+    <link rel="stylesheet" href="styles.css" />
     <script src="https://d3js.org/d3.v5.min.js" defer></script>
     <script src="https://d3js.org/d3-scale.v3.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3.layout.cloud.js"></script>
     <script src="app.js" defer></script>
   </head>
   <body>
+    <form>
+      <label for="ftext">Article text:</label><br />
+      <input type="text" id="ftext" name="ftext" /><br />
+      <button type="button" onclick="updateText()">Submit text</button>
+    </form>
+    <p id="freetext"></p>
     <div id="my_dataviz"></div>
     <div id="my_dataviz2"></div>
+    <p id="similarity"></p>
   </body>
 </html>
