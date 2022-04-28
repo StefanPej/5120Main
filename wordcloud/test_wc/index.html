@@ -159,13 +159,13 @@
             });
 
             //console.log(words);
-            console.log(words2);
+            //console.log(words2);
 
             var margin = { top: 10, right: 10, bottom: 10, left: 10 },
               width = 1000 - margin.left - margin.right,
               height = 1000 - margin.top - margin.bottom;
 
-            // append the svg object to the body of the page
+            // Adds SVGs
             var svg = d3
               .select("#my_dataviz")
               .append("svg")
@@ -189,20 +189,7 @@
                 "translate(" + margin.left + "," + margin.top + ")"
               );
 
-            // // Function to draw both WCs
-            // function drawOne() {
-            //   ftext = document.getElementById("ftext").value;
-            //   user_counts = wordCountMap(ftext);
-            //   //console.log(user_counts);
-
-            //   //console.log(similarity);
-            //   //console.log(words2);
-            //   draw(words2);
-
-            // }
-
-            //d3.select("#submitbutton").on("click", drawOne);
-            // Constructs a new cloud layout instance. It run an algorithm to find the position of words that suits your requirements
+            // Contructs layouts and decides where the words go
             var layout1 = d3.layout
               .cloud()
               .size([width, height])
@@ -226,8 +213,7 @@
               .on("end", draw2);
             layout2.start();
 
-            // This function takes the output of 'layout' above and draw the words
-            // Better not to touch it. To change parameters, play with the 'layout' variable above
+            // Function to draw the clouds
             function draw(words2) {
               svg
                 .append("g")
@@ -312,7 +298,7 @@
                   d3.selectAll("#" + id).style("fill", "black");
                 });
             } // Write similarity
-            similarity = Math.round(getSimilarity(counts, user_counts) * 100);
+            similarity = Math.round(getSimilarity(countsFreq, userFreq) * 100);
             document.getElementById("similarity").innerHTML =
               "Similarity: " + similarity + "%";
           }
