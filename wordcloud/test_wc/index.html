@@ -37,7 +37,7 @@
       ];
       // Maps for user input
       function wordCountMap(str) {
-        let words = str.split(" ");
+        let words = str.replace(/[\p{P}$+<=>^`|~]/gu, "").split(" ");
         let wordCount = {};
         words.forEach((w) => {
           wordCount[w] = (wordCount[w] || 0) + 1;
@@ -147,7 +147,9 @@
             .append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
+            .attr("id", "userwc")
             .append("g")
+            .attr("id", "maing")
             .attr(
               "transform",
               "translate(" + margin.left + "," + margin.top + ")"
@@ -168,42 +170,13 @@
           function drawOne() {
             ftext = document.getElementById("ftext").value;
             user_counts = wordCountMap(ftext);
-            //console.log(user_counts);
+            console.log(user_counts);
             similarity = Math.round(getSimilarity(counts, user_counts) * 100);
 
             //console.log(similarity);
             //console.log(words2);
+            d3.select("#maing").select("*").remove();
 
-            draw(words2);
-          }
-
-          d3.select("#submitbutton").on("click", drawOne);
-          // Constructs a new cloud layout instance. It run an algorithm to find the position of words that suits your requirements
-          var layout1 = d3.layout
-            .cloud()
-            .size([width, height])
-            .words(words2)
-            .padding(10)
-            .fontSize(function (d) {
-              return d.size * 40;
-            })
-            .rotate(0);
-          layout1.start();
-          var layout2 = d3.layout
-            .cloud()
-            .size([width, height])
-            .words(words)
-            .padding(10)
-            .fontSize(function (d) {
-              return d.size / 400;
-            })
-            .rotate(0)
-            .on("end", draw2);
-          layout2.start();
-
-          // This function takes the output of 'layout' above and draw the words
-          // Better not to touch it. To change parameters, play with the 'layout' variable above
-          function draw(words2) {
             svg
               .append("g")
               .attr(
@@ -246,6 +219,32 @@
             document.getElementById("similarity").innerHTML =
               "Similarity: " + similarity + "%";
           }
+
+          d3.select("#submitbutton").on("click", drawOne);
+
+          // Constructs a new cloud layout instance. It run an algorithm to find the position of words that suits your requirements
+          var layout1 = d3.layout
+            .cloud()
+            .size([width, height])
+            .words(words2)
+            .padding(10)
+            .fontSize(function (d) {
+              return d.size * 40;
+            })
+            .rotate(0);
+          layout1.start();
+          var layout2 = d3.layout
+            .cloud()
+            .size([width, height])
+            .words(words)
+            .padding(10)
+            .fontSize(function (d) {
+              return d.size / 400;
+            })
+            .rotate(0)
+            .on("end", draw2);
+          layout2.start();
+
           function draw2(words) {
             // Second WC
             svg2
