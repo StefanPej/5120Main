@@ -20,21 +20,9 @@
       /><br />
       <button type="button" id="submitbutton">Submit text</button>
     </form>
-    <p id="freetext"></p>
     <div id="my_dataviz"></div>
     <p id="similarity"></p>
     <script type="text/javascript">
-      test2 = [
-        { word: "look", count: 4151 },
-        { word: "way", count: 8809 },
-        { word: "officials", count: 3933 },
-        { word: "family", count: 4765 },
-        { word: "speech", count: 4039 },
-        { word: "americans", count: 6780 },
-        { word: "watch", count: 6602 },
-        { word: "took", count: 4557 },
-        { word: "donald", count: 17671 },
-      ];
       // Maps for user input
       function wordCountMap(str) {
         let words = str.replace(/[\p{P}$+<=>^`|~]/gu, "").split(" ");
@@ -110,183 +98,194 @@
         return cosSim(vec1, vec2);
       }
 
+      d3.select("#submitbutton").on("click", main_f);
+
       // Main function
-      d3.json("http://ec2-100-27-46-58.compute-1.amazonaws.com/vocabs").then(
-        function (data) {
-          const counts = data[1][0].wordcounts;
-          var similarity = 0;
-          var ftext = document.getElementById("ftext").value;
-          var user_counts = wordCountMap(ftext);
+      function main_f() {
+        d3.json("http://ec2-100-27-46-58.compute-1.amazonaws.com/vocabs").then(
+          function (data) {
+            d3.selectAll("svg").remove();
+            const counts = data[1][0].wordcounts;
+            var similarity = 0;
+            var ftext = document.getElementById("ftext").value;
+            var user_counts = wordCountMap(ftext);
 
-          //console.log(counts);
-          //console.log(words2);
-          //console.log(similarity);
-          //console.log(user_counts);
-
-          var words = counts.map(function (d) {
-            return { text: d.word, size: d.count };
-          });
-          var words2 = [];
-          Object.entries(user_counts).forEach(([k, v]) => {
-            keyval = {};
-            keyval["text"] = k;
-            keyval["size"] = v;
-            words2.push(keyval);
-          });
-
-          //console.log(words);
-          //console.log(words2);
-
-          var margin = { top: 10, right: 10, bottom: 10, left: 10 },
-            width = 1000 - margin.left - margin.right,
-            height = 1000 - margin.top - margin.bottom;
-
-          // append the svg object to the body of the page
-          var svg = d3
-            .select("#my_dataviz")
-            .append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .attr("id", "userwc")
-            .append("g")
-            .attr("id", "maing")
-            .attr(
-              "transform",
-              "translate(" + margin.left + "," + margin.top + ")"
-            );
-
-          var svg2 = d3
-            .select("#my_dataviz")
-            .append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-            .attr(
-              "transform",
-              "translate(" + margin.left + "," + margin.top + ")"
-            );
-
-          // Function to draw both WCs
-          function drawOne() {
-            ftext = document.getElementById("ftext").value;
-            user_counts = wordCountMap(ftext);
-            console.log(user_counts);
-            similarity = Math.round(getSimilarity(counts, user_counts) * 100);
-
-            //console.log(similarity);
+            //console.log(counts);
             //console.log(words2);
-            d3.select("#maing").select("*").remove();
+            //console.log(similarity);
+            //console.log(user_counts);
 
-            svg
+            var words = counts.map(function (d) {
+              return { text: d.word, size: d.count };
+            });
+            var words2 = [];
+            Object.entries(user_counts).forEach(([k, v]) => {
+              keyval = {};
+              keyval["text"] = k;
+              keyval["size"] = v;
+              words2.push(keyval);
+            });
+
+            //console.log(words);
+            //console.log(words2);
+
+            var margin = { top: 10, right: 10, bottom: 10, left: 10 },
+              width = 1000 - margin.left - margin.right,
+              height = 1000 - margin.top - margin.bottom;
+
+            // append the svg object to the body of the page
+            var svg = d3
+              .select("#my_dataviz")
+              .append("svg")
+              .attr("width", width + margin.left + margin.right)
+              .attr("height", height + margin.top + margin.bottom)
+              .append("g")
+              .attr("id", "maing")
+              .attr(
+                "transform",
+                "translate(" + margin.left + "," + margin.top + ")"
+              );
+
+            var svg2 = d3
+              .select("#my_dataviz")
+              .append("svg")
+              .attr("width", width + margin.left + margin.right)
+              .attr("height", height + margin.top + margin.bottom)
               .append("g")
               .attr(
                 "transform",
-                "translate(" +
-                  layout1.size()[0] / 2 +
-                  "," +
-                  layout1.size()[1] / 2 +
-                  ")"
-              )
-              .selectAll("text")
-              .data(words2)
-              .enter()
-              .append("text")
-              .style("font-size", function (d) {
-                return d.size + "px";
+                "translate(" + margin.left + "," + margin.top + ")"
+              );
+
+            // // Function to draw both WCs
+            // function drawOne() {
+            //   ftext = document.getElementById("ftext").value;
+            //   user_counts = wordCountMap(ftext);
+            //   //console.log(user_counts);
+
+            //   //console.log(similarity);
+            //   //console.log(words2);
+            //   draw(words2);
+
+            // }
+
+            //d3.select("#submitbutton").on("click", drawOne);
+            // Constructs a new cloud layout instance. It run an algorithm to find the position of words that suits your requirements
+            var layout1 = d3.layout
+              .cloud()
+              .size([width, height])
+              .words(words2)
+              .padding(10)
+              .fontSize(function (d) {
+                return d.size * 40;
               })
-              .attr("text-anchor", "middle")
-              .attr("transform", function (d) {
-                return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+              .rotate(0)
+              .on("end", draw);
+            layout1.start();
+            var layout2 = d3.layout
+              .cloud()
+              .size([width, height])
+              .words(words)
+              .padding(10)
+              .fontSize(function (d) {
+                return d.size / 400;
               })
-              .attr("id", function (d) {
-                return "id" + d.text;
-              })
-              .text(function (d) {
-                return d.text;
-              })
-              .on("mouseover", function (d) {
-                var id = "id" + d.text;
-                // Select all with ID and make red
-                d3.selectAll("#" + id).style("fill", "red");
-                d3.selectAll("#" + id).style("cursor", "pointer");
-              })
-              .on("mouseout", function (d) {
-                var id = "id" + d.text;
-                // Return other to base colour
-                d3.selectAll("#" + id).style("fill", "black");
-              });
-            // Write similarity
+              .rotate(0)
+              .on("end", draw2);
+            layout2.start();
+
+            // This function takes the output of 'layout' above and draw the words
+            // Better not to touch it. To change parameters, play with the 'layout' variable above
+            function draw(words2) {
+              svg
+                .append("g")
+                .attr(
+                  "transform",
+                  "translate(" +
+                    layout1.size()[0] / 2 +
+                    "," +
+                    layout1.size()[1] / 2 +
+                    ")"
+                )
+                .selectAll("text")
+                .data(words2)
+                .enter()
+                .append("text")
+                .style("font-size", function (d) {
+                  return d.size + "px";
+                })
+                .attr("text-anchor", "middle")
+                .attr("transform", function (d) {
+                  return (
+                    "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")"
+                  );
+                })
+                .attr("id", function (d) {
+                  return "id" + d.text;
+                })
+                .text(function (d) {
+                  return d.text;
+                })
+                .on("mouseover", function (d) {
+                  var id = "id" + d.text;
+                  // Select all with ID and make red
+                  d3.selectAll("#" + id).style("fill", "red");
+                  d3.selectAll("#" + id).style("cursor", "pointer");
+                })
+                .on("mouseout", function (d) {
+                  var id = "id" + d.text;
+                  // Return other to base colour
+                  d3.selectAll("#" + id).style("fill", "black");
+                });
+            }
+            function draw2(words) {
+              // Second WC
+              svg2
+                .append("g")
+                .attr(
+                  "transform",
+                  "translate(" +
+                    layout2.size()[0] / 2 +
+                    "," +
+                    layout2.size()[1] / 2 +
+                    ")"
+                )
+                .selectAll("text")
+                .data(words)
+                .enter()
+                .append("text")
+                .style("font-size", function (d) {
+                  return d.size + "px";
+                })
+                .attr("text-anchor", "middle")
+                .attr("transform", function (d) {
+                  return (
+                    "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")"
+                  );
+                })
+                .attr("id", function (d) {
+                  return "id" + d.text;
+                })
+                .text(function (d) {
+                  return d.text;
+                })
+                .on("mouseover", function (d) {
+                  var id = "id" + d.text;
+                  // Select and make red
+                  d3.selectAll("#" + id).style("fill", "red");
+                })
+                .on("mouseout", function (d) {
+                  var id = "id" + d.text;
+                  // Return to base colour
+                  d3.selectAll("#" + id).style("fill", "black");
+                });
+            } // Write similarity
+            similarity = Math.round(getSimilarity(counts, user_counts) * 100);
             document.getElementById("similarity").innerHTML =
               "Similarity: " + similarity + "%";
           }
-
-          d3.select("#submitbutton").on("click", drawOne);
-
-          // Constructs a new cloud layout instance. It run an algorithm to find the position of words that suits your requirements
-          var layout1 = d3.layout
-            .cloud()
-            .size([width, height])
-            .words(words2)
-            .padding(10)
-            .fontSize(function (d) {
-              return d.size * 40;
-            })
-            .rotate(0);
-          layout1.start();
-          var layout2 = d3.layout
-            .cloud()
-            .size([width, height])
-            .words(words)
-            .padding(10)
-            .fontSize(function (d) {
-              return d.size / 400;
-            })
-            .rotate(0)
-            .on("end", draw2);
-          layout2.start();
-
-          function draw2(words) {
-            // Second WC
-            svg2
-              .append("g")
-              .attr(
-                "transform",
-                "translate(" +
-                  layout2.size()[0] / 2 +
-                  "," +
-                  layout2.size()[1] / 2 +
-                  ")"
-              )
-              .selectAll("text")
-              .data(words)
-              .enter()
-              .append("text")
-              .style("font-size", function (d) {
-                return d.size + "px";
-              })
-              .attr("text-anchor", "middle")
-              .attr("transform", function (d) {
-                return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
-              })
-              .attr("id", function (d) {
-                return "id" + d.text;
-              })
-              .text(function (d) {
-                return d.text;
-              })
-              .on("mouseover", function (d) {
-                var id = "id" + d.text;
-                // Select and make red
-                d3.selectAll("#" + id).style("fill", "red");
-              })
-              .on("mouseout", function (d) {
-                var id = "id" + d.text;
-                // Return to base colour
-                d3.selectAll("#" + id).style("fill", "black");
-              });
-          }
-        }
-      );
+        );
+      }
     </script>
   </body>
 </html>
