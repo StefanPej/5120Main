@@ -98,6 +98,33 @@
         return cosSim(vec1, vec2);
       }
 
+      function convertToFreq(wordcount) {
+        var totalWords = 0;
+        for (let i = 0; i < wordcount.length; i++) {
+          totalWords += wordcount[i].count;
+          //console.log(wordcount[i].count);
+        }
+        var freqVec = [];
+        for (let i = 0; i < wordcount.length; i++) {
+          wordFreq = {
+            word: wordcount[i].word,
+            count: wordcount[i].count / totalWords,
+          };
+          freqVec.push(wordFreq);
+        }
+        return freqVec;
+      }
+
+      function convertToFreq2(wordcount) {
+        var totalWords = 0;
+        Object.entries(wordcount).forEach(([k, v]) => (totalWords += v));
+        var freqDict = {};
+        Object.entries(wordcount).forEach(
+          ([k, v]) => (freqDict[k] = v / totalWords)
+        );
+        return freqDict;
+      }
+
       d3.select("#submitbutton").on("click", main_f);
 
       // Main function
@@ -110,16 +137,21 @@
             var ftext = document.getElementById("ftext").value;
             var user_counts = wordCountMap(ftext);
 
+            var countsFreq = convertToFreq(counts);
+            var userFreq = convertToFreq2(user_counts);
+
+            //console.log(user_counts);
             //console.log(counts);
             //console.log(words2);
             //console.log(similarity);
             //console.log(user_counts);
+            //console.log(countsFreq);
 
-            var words = counts.map(function (d) {
+            var words = countsFreq.map(function (d) {
               return { text: d.word, size: d.count };
             });
             var words2 = [];
-            Object.entries(user_counts).forEach(([k, v]) => {
+            Object.entries(userFreq).forEach(([k, v]) => {
               keyval = {};
               keyval["text"] = k;
               keyval["size"] = v;
@@ -127,7 +159,7 @@
             });
 
             //console.log(words);
-            //console.log(words2);
+            console.log(words2);
 
             var margin = { top: 10, right: 10, bottom: 10, left: 10 },
               width = 1000 - margin.left - margin.right,
@@ -177,7 +209,7 @@
               .words(words2)
               .padding(10)
               .fontSize(function (d) {
-                return d.size * 40;
+                return d.size * 400;
               })
               .rotate(0)
               .on("end", draw);
@@ -188,7 +220,7 @@
               .words(words)
               .padding(10)
               .fontSize(function (d) {
-                return d.size / 400;
+                return d.size * 4000;
               })
               .rotate(0)
               .on("end", draw2);
