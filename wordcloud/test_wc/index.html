@@ -162,8 +162,8 @@
             //console.log(words2);
 
             var margin = { top: 10, right: 10, bottom: 10, left: 10 },
-              width = 1000 - margin.left - margin.right,
-              height = 1000 - margin.top - margin.bottom;
+              width = 500 - margin.left - margin.right,
+              height = 500 - margin.top - margin.bottom;
 
             // Adds SVGs
             var svg = d3
@@ -196,7 +196,7 @@
               .words(words2)
               .padding(10)
               .fontSize(function (d) {
-                return d.size * 400;
+                return d.size * 800;
               })
               .rotate(0)
               .on("end", draw);
@@ -207,7 +207,7 @@
               .words(words)
               .padding(10)
               .fontSize(function (d) {
-                return d.size * 4000;
+                return d.size * 2000;
               })
               .rotate(0)
               .on("end", draw2);
