@@ -5,33 +5,297 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Wordcloud</title>
+  </head>
+  <body>
+    <link
+      href="https://fonts.googleapis.com/css?family=Poppins"
+      rel="stylesheet"
+    />
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="https://d3js.org/d3-scale.v3.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3.layout.cloud.js"></script>
-  </head>
-  <body>
+    <!-- CSS BELOW TAKEN FROM https://getcssscan.com/css-buttons-examples by Dribbble -->
+    <style>
+      .button-1 {
+        background-color: #2c8deb;
+        border-radius: 8px;
+        border-style: none;
+        box-sizing: border-box;
+        color: #ffffff;
+        cursor: pointer;
+        display: inline-block;
+        font-family: "Poppins";
+        font-size: 14px;
+        font-weight: 500;
+        height: 40px;
+        line-height: 20px;
+        list-style: none;
+        margin: 0;
+        outline: none;
+        padding: 10px 16px;
+        position: relative;
+        text-align: center;
+        text-decoration: none;
+        transition: color 100ms;
+        vertical-align: baseline;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+      }
+
+      .button-1:hover,
+      .button-1:focus {
+        background-color: #4da2f4;
+      }
+    </style>
+
     <form>
-      <label for="ftext">Article text:</label><br />
+      <label for="ftext" style="font-family: Poppins">Article text:</label
+      ><br />
       <input
         type="text"
         id="ftext"
         name="ftext"
-        value="Enter your article text here!"
+        value="Enter your article text here"
+        size="150"
       /><br />
-      <button type="button" id="submitbutton">Submit text</button>
+      <button class="button-1" type="button" id="submitbutton">Compare!</button>
     </form>
     <div id="my_dataviz"></div>
     <p id="similarity"></p>
     <script type="text/javascript">
+      /*
+      ======================================
+      GLOBAL VARIABLES
+      ======================================
+      */
+      stopwords = [
+        "i",
+        "me",
+        "my",
+        "myself",
+        "we",
+        "our",
+        "ours",
+        "ourselves",
+        "you",
+        "your",
+        "yours",
+        "yourself",
+        "yourselves",
+        "he",
+        "him",
+        "his",
+        "himself",
+        "she",
+        "her",
+        "hers",
+        "herself",
+        "it",
+        "its",
+        "itself",
+        "they",
+        "them",
+        "their",
+        "theirs",
+        "themselves",
+        "what",
+        "which",
+        "who",
+        "whom",
+        "this",
+        "that",
+        "these",
+        "those",
+        "am",
+        "is",
+        "are",
+        "was",
+        "were",
+        "be",
+        "been",
+        "being",
+        "have",
+        "has",
+        "had",
+        "having",
+        "do",
+        "does",
+        "did",
+        "doing",
+        "a",
+        "an",
+        "the",
+        "and",
+        "but",
+        "if",
+        "or",
+        "because",
+        "as",
+        "until",
+        "while",
+        "of",
+        "at",
+        "by",
+        "for",
+        "with",
+        "about",
+        "against",
+        "between",
+        "into",
+        "through",
+        "during",
+        "before",
+        "after",
+        "above",
+        "below",
+        "to",
+        "from",
+        "up",
+        "down",
+        "in",
+        "out",
+        "on",
+        "off",
+        "over",
+        "under",
+        "again",
+        "further",
+        "then",
+        "once",
+        "here",
+        "there",
+        "when",
+        "where",
+        "why",
+        "how",
+        "all",
+        "any",
+        "both",
+        "each",
+        "few",
+        "more",
+        "most",
+        "other",
+        "some",
+        "such",
+        "no",
+        "nor",
+        "not",
+        "only",
+        "own",
+        "same",
+        "so",
+        "than",
+        "too",
+        "very",
+        "s",
+        "t",
+        "can",
+        "will",
+        "just",
+        "don",
+        "should",
+        "now",
+      ];
+      font = "Poppins";
+      mouseOverCol = "red";
+      cursorType = "default";
+
+      /*
+      ======================================
+      FUNCTIONS
+      ======================================
+      */
+
+      // Cleans a user string
+      function cleanString(str) {
+        let words = str
+          .replace(/[\p{P}$+<=>^`|~]/gu, "")
+          .toLowerCase()
+          .split(" ");
+
+        let clean_words = [];
+        for (let i = 0; i < words.length; i++) {
+          if (!stopwords.includes(words[i])) {
+            clean_words.push(words[i]);
+          }
+        }
+
+        return clean_words;
+      }
+
       // Maps for user input
       function wordCountMap(str) {
-        let words = str.replace(/[\p{P}$+<=>^`|~]/gu, "").split(" ");
+        words = cleanString(str);
         let wordCount = {};
         words.forEach((w) => {
           wordCount[w] = (wordCount[w] || 0) + 1;
         });
         return wordCount;
       }
+
+      // Function to get the object with the highest value
+      function getMinMax(arr) {
+        let vals = [];
+        for (var i = 0; i < arr.length; i++) {
+          //console.log(arr[i].count);
+          vals.push(arr[i].count);
+        }
+        maxVal = Math.max(...vals);
+        minVal = Math.min(...vals);
+        return [maxVal, minVal];
+      }
+
+      // Make the font size
+      function getFontSizeMain(arr) {
+        minMax = getMinMax(arr);
+        minMaxDiff = minMax[0] - minMax[1];
+        console.log(minMaxDiff);
+        maxFont = 103;
+        minFont = 11;
+        fontDiff = maxFont - minFont;
+        for (var i = 0; i < arr.length; i++) {
+          countDiff = minMax[0] - arr[i].count;
+          //console.log(countDiff);
+          fontAmt = (1 - countDiff / minMaxDiff) * fontDiff;
+          //console.log(fontAmt);
+          fontSize = Math.round(minFont + fontAmt);
+          //console.log(fontSize);
+          arr[i].count = fontSize;
+        }
+      }
+
+      // Same as above but for user input
+      function getMinMaxUser(dict) {
+        let vals = [];
+        for (let [k, v] of Object.entries(dict)) {
+          //console.log(arr[i].count);
+          vals.push(v);
+        }
+        maxVal = Math.max(...vals);
+        minVal = Math.min(...vals);
+        return [maxVal, minVal];
+      }
+      function getFontSizeUser(dict) {
+        minMax = getMinMaxUser(dict);
+        minMaxDiff = minMax[0] - minMax[1];
+        console.log(minMaxDiff);
+        maxFont = 103;
+        minFont = 11;
+        fontDiff = maxFont - minFont;
+
+        for (let [k, v] of Object.entries(dict)) {
+          countDiff = minMax[0] - v;
+          //console.log(countDiff);
+          fontAmt = (1 - countDiff / minMaxDiff) * fontDiff;
+          //console.log(fontAmt);
+          fontSize = Math.round(minFont + fontAmt);
+          //console.log(fontSize);
+          dict[k] = fontSize;
+        }
+      }
+
       // Converts format of wordcount list
       function countMap(wordcount) {
         let wordCountNew = {};
@@ -89,15 +353,10 @@
         wordsToDict(counts2, dict);
         let vec1 = countMapToVect(counts1, dict);
         let vec2 = countMapToVect(counts2, dict);
-        // vec1.forEach((element) => console.log(element));
-        // console.log("vec1 len " + vec1.length);
-        // console.log("dict len " + Object.keys(dict).length);
-        // console.log("dot " + dotProd(vec1, vec2));
-        // console.log("mag1 " + magnitude(vec1));
-        // console.log("mag2 " + magnitude(vec2));
         return cosSim(vec1, vec2);
       }
 
+      // Converts a wordcount array and concerts to wordcount freq array
       function convertToFreq(wordcount) {
         var totalWords = 0;
         for (let i = 0; i < wordcount.length; i++) {
@@ -115,6 +374,7 @@
         return freqVec;
       }
 
+      // Converts words to frequencies for user input
       function convertToFreq2(wordcount) {
         var totalWords = 0;
         Object.entries(wordcount).forEach(([k, v]) => (totalWords += v));
@@ -125,7 +385,13 @@
         return freqDict;
       }
 
-      d3.select("#submitbutton").on("click", main_f);
+      /*
+      ======================================
+      MAIN FUNCTIONALITY
+      ======================================
+      */
+
+      d3.selectAll("#submitbutton").on("click", main_f);
 
       // Main function
       function main_f() {
@@ -139,13 +405,17 @@
 
             var countsFreq = convertToFreq(counts);
             var userFreq = convertToFreq2(user_counts);
+            getFontSizeMain(countsFreq);
+            getFontSizeUser(userFreq);
 
-            //console.log(user_counts);
+            getMinMaxUser(user_counts);
+            console.log(user_counts);
             //console.log(counts);
             //console.log(words2);
             //console.log(similarity);
             //console.log(user_counts);
             //console.log(countsFreq);
+            //console.log(userFreq);
 
             var words = countsFreq.map(function (d) {
               return { text: d.word, size: d.count };
@@ -158,6 +428,7 @@
               words2.push(keyval);
             });
 
+            //console.log(getMinMax(countsFreq))
             //console.log(words);
             //console.log(words2);
 
@@ -196,7 +467,7 @@
               .words(words2)
               .padding(10)
               .fontSize(function (d) {
-                return d.size * 800;
+                return d.size / 1.2;
               })
               .rotate(0)
               .on("end", draw);
@@ -207,7 +478,7 @@
               .words(words)
               .padding(10)
               .fontSize(function (d) {
-                return d.size * 2000;
+                return d.size / 1.2;
               })
               .rotate(0)
               .on("end", draw2);
@@ -232,6 +503,7 @@
                 .style("font-size", function (d) {
                   return d.size + "px";
                 })
+                .style("font-family", font)
                 .attr("text-anchor", "middle")
                 .attr("transform", function (d) {
                   return (
@@ -247,13 +519,19 @@
                 .on("mouseover", function (d) {
                   var id = "id" + d.text;
                   // Select all with ID and make red
-                  d3.selectAll("#" + id).style("fill", "red");
-                  d3.selectAll("#" + id).style("cursor", "pointer");
+                  d3.selectAll("#" + id).style("fill", mouseOverCol);
+                  d3.selectAll("#" + id).style("cursor", cursorType);
+                  d3.selectAll("#" + id).style("font-size", function (d) {
+                    return Math.max(80, d.size) + "px";
+                  });
                 })
                 .on("mouseout", function (d) {
                   var id = "id" + d.text;
                   // Return other to base colour
                   d3.selectAll("#" + id).style("fill", "black");
+                  d3.selectAll("#" + id).style("font-size", function (d) {
+                    return d.size + "px";
+                  });
                 });
             }
             function draw2(words) {
@@ -275,6 +553,7 @@
                 .style("font-size", function (d) {
                   return d.size + "px";
                 })
+                .style("font-family", font)
                 .attr("text-anchor", "middle")
                 .attr("transform", function (d) {
                   return (
@@ -290,12 +569,20 @@
                 .on("mouseover", function (d) {
                   var id = "id" + d.text;
                   // Select and make red
-                  d3.selectAll("#" + id).style("fill", "red");
+                  d3.selectAll("#" + id).style("fill", mouseOverCol);
+                  d3.selectAll("#" + id).style("cursor", cursorType);
+                  d3.selectAll("#" + id).style("font-size", function (d) {
+                    return Math.max(80, d.size) + "px";
+                  });
+                  //console.log(d.size);
                 })
                 .on("mouseout", function (d) {
                   var id = "id" + d.text;
                   // Return to base colour
                   d3.selectAll("#" + id).style("fill", "black");
+                  d3.selectAll("#" + id).style("font-size", function (d) {
+                    return d.size + "px";
+                  });
                 });
             } // Write similarity
             similarity = Math.round(getSimilarity(countsFreq, userFreq) * 100);
