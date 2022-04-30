@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The more realistic, the longer</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        body{
+
+            overflow-x:hidden;
+
+        }
+       
+
+        #left {
+            float: left;
+            word-break:break-all;
+            width: 350px;
+            padding-left: 10px;
+        }
+        #right {
+            float: right;
+            word-break:break-all;
+            width: 330px;
+            padding-right: 10px;
+        }
+
+        #score {
+            border: 5px solid #f8bbd0;
+            background-color: #fce4ec;
+            font-weight: bold;
+            height: 100px;
+            text-align: center;
+            padding-top: 45px;
+
+        }
+
+        #desciption {
+            border: 5px solid #f8bbd0;
+            background-color: #fce4ec;
+            font-weight: bold;
+            height: 350px;
+            text-align: center;
+            margin-top: 10px;
+
+        }
+
+        #opertion {
+            border: 5px solid #f8bbd0;
+            background-color: #fce4ec;
+            font-weight: bold;
+            height: 510px;
+            /* text-align: center; */
+            margin-top: 10px;
+
+        }
+
+        #dCenter {
+            word-break:break-all;
+            /* padding-left: 10px; */
+            text-align: center;
+            padding-left: 270px;
+            padding-right: 270px;
+            font-weight: bold;
+            font-size: large;
+            height: 50px;
+        }
+ 
+        #app {
+            position: relative;
+            border: 20px solid #f8bbd0;
+            background-color: #fce4ec;
+            width: 500px;
+            height: 500px;
+            margin: 15px auto;
+        }
+
+        #desc {
+            font-weight: bold;
+            /* text-align: center; */
+            /* font-size: large; */
+        }
+
+        .text{
+          font-family: 'fangsong';
+          display: inline-block;
+          position: relative;
+          font-size: 18px;
+          height: 30px;
+          margin-top: 180px;
+          padding-left: 15px;
+          padding-right: 15px;
+          /* line-height: 60px; */
+          color: rgb(10, 0, 0);
+        }
+        .text::after{
+            content: ' ';
+            white-space: pre;
+            /* position: absolute; */
+            /* right: -10px; */
+            /* top: 20px; */
+            height: 2px;
+            width: 3px;     
+            background-color: #fff;
+            animation: san 0.5s steps(1) infinite;
+        }
+        @keyframes san{
+            0%,100%{
+                background-color: rgb(8, 0, 0);
+            }
+            50%{
+               background-color: transparent;
+            }
+
+        }
+ 
+        table {
+            border-collapse: collapse;
+            background-color: #fce4ec;
+        }
+ 
+        td {
+            position: relative;
+            background-size: 100% 100%;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            /* background-color: #fce4ec; */
+            /* border: 1px solid #aaa; */
+        }
+ 
+        td .snake {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+ 
+        .start{
+            cursor: pointer;
+            position: absolute;
+            width: 100px;
+            top: 90%;
+            left: 90%;
+            transform: translate(-50%, -50%);
+        }
+        .suspend {
+            cursor: pointer;
+            position: absolute;
+            width: 150px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .title {
+            cursor: pointer;
+            position: absolute;
+            width: 390px;
+            top: 10%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .guide {
+            cursor: pointer;
+            position: absolute;
+            width: 100px;
+            top: 25%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .guideNew {
+            position: absolute;
+            top: 30%;
+            left: 25%;
+
+        }
+ 
+        .suspend {
+            display: none;
+            z-index: 2;
+        }
+        .next {
+            cursor: pointer;
+            position: absolute;
+            width: 100px;
+            top: 90%;
+            left: 10%;
+            transform: translate(-50%, -50%);
+        }
+        .opertion-desc {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+        .directionKey {
+            cursor: pointer;
+            position: absolute;
+            width: 230px;
+            top: 50%;
+            left: 92%;
+            transform: translate(-50%, -50%);
+            
+        }
+        .directionKeyDesc {
+            position: absolute;
+            top: 50%;
+            left: 77%;
+            padding-left: 10px;          
+        }
+
+        .spaceKey {
+            cursor: pointer;
+            position: absolute;
+            width: 230px;
+            top: 65%;
+            left: 87%;
+            transform: translate(-50%, -50%);
+            
+        }
+        .spaceKeyDesc {
+            position: absolute;
+            top: 70%;
+            left: 77%;
+            padding-left: 10px;          
+        }
+    </style>
+</head>
+ 
+<body>
+    <!-- <h3 id="f">帧编号:0</h3>
+    <h3 id="score">分数：0</h3> -->
+    <div id="left">
+        <div style="height: 70px;"></div>
+        <div id="score">
+            realnews:0<br>
+            fakenews:0
+        </div>
+        
+    </div>
+    <div id="right">
+        <div style="height: 60px;"></div>
+        <div id = 'opertion'>
+            <div class="opertion-desc">
+                <br>
+                Study and have fun～～<br><br>
+                Identify more true news and skip the<br>fruit that represents fake news！<br><br>
+                Let's make the sneak stronger！<br>
+            </div>
+            <img src="images/directionKey.gif" class="directionKey">
+            <div class="directionKeyDesc">
+                Control the sneak  
+            </div>
+            <img src="images/spaceKey.gif" class="spaceKey">
+            <div class="spaceKeyDesc">
+                Click "Space" to skip the fake news
+            </div>
+            
+        </div>
+
+    </div>
+    <div>
+        <div id="dCenter">
+        </div>
+        <div id="app">
+            <img src="images/suspended.png" alt="" class="suspend">
+            <div id="desc">
+                <div class="guideNew">New players read the guide plz～～</div>
+                <div class="text">
+                    <!-- <span class="text" ></span> -->
+                </div>
+                <img src="images/truthCollector.gif" alt="" class="title">
+                <img src="images/guide.gif"  class="guide">
+                <img src="images/next.gif" alt="" class="next">
+                <img src="images/start.gif" alt="" class="start">
+                
+            </div>
+
+        </div>
+    </div>
+    <!-- <script src="js/last.js"></script> -->
+    <script src="js/Snake.js"></script>
+    <script src="js/Food.js"></script>
+    <script src="js/Game.js"></script>
+    <script>
+
+
+        var game = null;
+
+        var suspend = document.querySelector('.suspend');
+        const text = document.querySelector('.text');
+        var contents = ['1.Real and fake news will appear randomly at the top of the game box.','2.The real news is that fruit can be eaten, steering, and eating it makes snakes longer.','3.Fake news means fruit is poisonous, press the "Space" to skip it.','4.Make your little snake stronger!']
+        
+        let preText = ""
+        let curText = ""
+        let tIndex = ""
+        var flag = true;
+        var index = -1
+
+
+        document.querySelector('.next').addEventListener('click',function (){
+            index = index + 1
+            
+            if (index >= contents.length){
+                var allText = ""
+                for (let i =0;i<contents.length;i++){
+                    allText = allText + contents[i] + '<br><br>'
+                }
+                const innerhtml = allText.substring(0,allText.length-8)
+                text.innerHTML = innerhtml
+                flag=false
+                return
+            }
+            preText = ""
+            
+            for (let i =0;i<index;i++){
+                preText = preText + contents[i] + '<br><br>'
+            }
+            curText = contents[index]
+            
+            tIndex = 0
+        })
+        var interval = setInterval(function(){
+            if(curText && curText.length >0){
+                text.innerHTML = preText + curText.slice(0,++tIndex);
+                if (curText == '4.Make your little snake stronger!' && (tIndex>curText.length||flag == false)){
+                    text.innerHTML = preText + curText
+                    clearInterval(interval);
+                }
+            }
+        },100)
+
+
+        document.querySelector('.start').addEventListener('click', function () {
+            // document.querySelector('#app').style.backgroundColor='white';
+            document.getElementById('desc').innerHTML = ''
+            this.style.display = 'none';
+            game = new Game();
+            document.querySelector('table').addEventListener('click', function () {
+                clearInterval(game.timer);
+                suspend.style.display = 'block';
+ 
+            })
+            suspend.addEventListener('click', function () {
+                suspend.style.display = 'none';
+                game.timer = setInterval(function () {
+                    game.f++;
+                    // document.getElementById('f').innerHTML = '帧编号：' + game.f;
+                    // document.getElementById('score').innerHTML = '分数：' + game.score;
+                    // 清屏
+                    game.clear();
+                    // 蛇的运动（更新）
+                    // 蛇的更新速度，当蛇变长的时候，速度要加快
+                    var during = game.snake.body.length < 30 ? 30 - game.snake.body.length : 1;
+                    game.f % during == 0 && game.snake.update();
+ 
+                    // game.snake.update();
+                    // 渲染蛇
+                    game.snake.render();
+                    // 渲染食物
+                    game.food.render();
+                    document.getElementById('score').innerHTML = 'realnews:' + game.score +'<br/>' + 'fakenews:'+game.fakeScore;
+                }, 10)
+            })
+        })
+    </script>
+</body>
+ 
+</html>
