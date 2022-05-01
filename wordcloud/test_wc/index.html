@@ -64,8 +64,9 @@
         type="text"
         id="ftext"
         name="ftext"
-        value="Enter your article text here"
+        value="Enter your article text here..."
         size="100%"
+        onclick="clearText()"
       /><br /><br />
       <button class="button-1" type="button" id="submitbutton">Compare!</button>
     </form>
@@ -390,6 +391,16 @@
           ([k, v]) => (freqDict[k] = v / totalWords)
         );
         return freqDict;
+      }
+
+      // Clears text
+      function clearText() {
+        if (
+          document.getElementById("ftext").value ==
+          "Enter your article text here..."
+        ) {
+          document.getElementById("ftext").value = "";
+        }
       }
 
       /*
