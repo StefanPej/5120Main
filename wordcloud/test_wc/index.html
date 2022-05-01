@@ -50,19 +50,27 @@
     </style>
 
     <form>
-      <label for="ftext" style="font-family: Poppins">Article text:</label
+      <label
+        for="ftext"
+        style="
+          font-family: Poppins;
+          font-size: 30px;
+          font-weight: bold;
+          color: #2c8deb;
+        "
+        >Article text:</label
       ><br />
       <input
         type="text"
         id="ftext"
         name="ftext"
         value="Enter your article text here"
-        size="150"
-      /><br />
+        size="100%"
+      /><br /><br />
       <button class="button-1" type="button" id="submitbutton">Compare!</button>
     </form>
     <div id="my_dataviz"></div>
-    <p id="similarity"></p>
+    <p id="similarity" style="font-family: Poppins; font-size: 20px"></p>
     <script type="text/javascript">
       /*
       ======================================
@@ -198,9 +206,12 @@
         "should",
         "now",
       ];
-      font = "Poppins";
-      mouseOverCol = "red";
-      cursorType = "default";
+      const font = "Poppins";
+      const mouseOverCol = "#ED6B54";
+      const cursorType = "default";
+      const maxFont = 80;
+      const minFont = 11;
+      const mouseOverSize = 70;
 
       /*
       ======================================
@@ -251,9 +262,7 @@
       function getFontSizeMain(arr) {
         minMax = getMinMax(arr);
         minMaxDiff = minMax[0] - minMax[1];
-        console.log(minMaxDiff);
-        maxFont = 103;
-        minFont = 11;
+        //console.log(minMaxDiff);
         fontDiff = maxFont - minFont;
         for (var i = 0; i < arr.length; i++) {
           countDiff = minMax[0] - arr[i].count;
@@ -280,9 +289,7 @@
       function getFontSizeUser(dict) {
         minMax = getMinMaxUser(dict);
         minMaxDiff = minMax[0] - minMax[1];
-        console.log(minMaxDiff);
-        maxFont = 103;
-        minFont = 11;
+        //console.log(minMaxDiff);
         fontDiff = maxFont - minFont;
 
         for (let [k, v] of Object.entries(dict)) {
@@ -395,201 +402,195 @@
 
       // Main function
       function main_f() {
-        d3.json("http://ec2-100-27-46-58.compute-1.amazonaws.com/vocabs").then(
-          function (data) {
-            d3.selectAll("svg").remove();
-            const counts = data[1][0].wordcounts;
-            var similarity = 0;
-            var ftext = document.getElementById("ftext").value;
-            var user_counts = wordCountMap(ftext);
+        d3.json("http://18.214.160.177/vocabs").then(function (data) {
+          d3.selectAll("svg").remove();
+          const counts = data[1][0].wordcounts;
+          var similarity = 0;
+          var ftext = document.getElementById("ftext").value;
+          var user_counts = wordCountMap(ftext);
 
-            var countsFreq = convertToFreq(counts);
-            var userFreq = convertToFreq2(user_counts);
-            getFontSizeMain(countsFreq);
-            getFontSizeUser(userFreq);
+          var countsFreq = convertToFreq(counts);
+          var userFreq = convertToFreq2(user_counts);
+          getFontSizeMain(countsFreq);
+          getFontSizeUser(userFreq);
 
-            getMinMaxUser(user_counts);
-            console.log(user_counts);
-            //console.log(counts);
-            //console.log(words2);
-            //console.log(similarity);
-            //console.log(user_counts);
-            //console.log(countsFreq);
-            //console.log(userFreq);
+          getMinMaxUser(user_counts);
+          //console.log(user_counts);
+          //console.log(counts);
+          //console.log(words2);
+          //console.log(similarity);
+          //console.log(user_counts);
+          //console.log(countsFreq);
+          //console.log(userFreq);
 
-            var words = countsFreq.map(function (d) {
-              return { text: d.word, size: d.count };
-            });
-            var words2 = [];
-            Object.entries(userFreq).forEach(([k, v]) => {
-              keyval = {};
-              keyval["text"] = k;
-              keyval["size"] = v;
-              words2.push(keyval);
-            });
+          var words = countsFreq.map(function (d) {
+            return { text: d.word, size: d.count };
+          });
+          var words2 = [];
+          Object.entries(userFreq).forEach(([k, v]) => {
+            keyval = {};
+            keyval["text"] = k;
+            keyval["size"] = v;
+            words2.push(keyval);
+          });
 
-            //console.log(getMinMax(countsFreq))
-            //console.log(words);
-            //console.log(words2);
+          //console.log(getMinMax(countsFreq))
+          //console.log(words);
+          //console.log(words2);
 
-            var margin = { top: 10, right: 10, bottom: 10, left: 10 },
-              width = 500 - margin.left - margin.right,
-              height = 500 - margin.top - margin.bottom;
+          var margin = { top: 10, right: 10, bottom: 10, left: 10 },
+            width = 400 - margin.left - margin.right,
+            height = 400 - margin.top - margin.bottom;
 
-            // Adds SVGs
-            var svg = d3
-              .select("#my_dataviz")
-              .append("svg")
-              .attr("width", width + margin.left + margin.right)
-              .attr("height", height + margin.top + margin.bottom)
+          // Adds SVGs
+          var svg = d3
+            .select("#my_dataviz")
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("id", "maing")
+            .attr(
+              "transform",
+              "translate(" + margin.left + "," + margin.top + ")"
+            );
+
+          var svg2 = d3
+            .select("#my_dataviz")
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr(
+              "transform",
+              "translate(" + margin.left + "," + margin.top + ")"
+            );
+
+          // Contructs layouts and decides where the words go
+          var layout1 = d3.layout
+            .cloud()
+            .size([width, height])
+            .words(words2)
+            .padding(10)
+            .fontSize(function (d) {
+              return d.size / 1.2;
+            })
+            .rotate(0)
+            .on("end", draw);
+          layout1.start();
+          var layout2 = d3.layout
+            .cloud()
+            .size([width, height])
+            .words(words)
+            .padding(10)
+            .fontSize(function (d) {
+              return d.size / 1.2;
+            })
+            .rotate(0)
+            .on("end", draw2);
+          layout2.start();
+
+          // Function to draw the clouds
+          function draw(words2) {
+            svg
               .append("g")
-              .attr("id", "maing")
               .attr(
                 "transform",
-                "translate(" + margin.left + "," + margin.top + ")"
-              );
-
-            var svg2 = d3
-              .select("#my_dataviz")
-              .append("svg")
-              .attr("width", width + margin.left + margin.right)
-              .attr("height", height + margin.top + margin.bottom)
-              .append("g")
-              .attr(
-                "transform",
-                "translate(" + margin.left + "," + margin.top + ")"
-              );
-
-            // Contructs layouts and decides where the words go
-            var layout1 = d3.layout
-              .cloud()
-              .size([width, height])
-              .words(words2)
-              .padding(10)
-              .fontSize(function (d) {
-                return d.size / 1.2;
+                "translate(" +
+                  layout1.size()[0] / 2 +
+                  "," +
+                  layout1.size()[1] / 2 +
+                  ")"
+              )
+              .selectAll("text")
+              .data(words2)
+              .enter()
+              .append("text")
+              .style("font-size", function (d) {
+                return d.size + "px";
               })
-              .rotate(0)
-              .on("end", draw);
-            layout1.start();
-            var layout2 = d3.layout
-              .cloud()
-              .size([width, height])
-              .words(words)
-              .padding(10)
-              .fontSize(function (d) {
-                return d.size / 1.2;
+              .style("font-family", font)
+              .attr("text-anchor", "middle")
+              .attr("transform", function (d) {
+                return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
               })
-              .rotate(0)
-              .on("end", draw2);
-            layout2.start();
-
-            // Function to draw the clouds
-            function draw(words2) {
-              svg
-                .append("g")
-                .attr(
-                  "transform",
-                  "translate(" +
-                    layout1.size()[0] / 2 +
-                    "," +
-                    layout1.size()[1] / 2 +
-                    ")"
-                )
-                .selectAll("text")
-                .data(words2)
-                .enter()
-                .append("text")
-                .style("font-size", function (d) {
-                  return d.size + "px";
-                })
-                .style("font-family", font)
-                .attr("text-anchor", "middle")
-                .attr("transform", function (d) {
-                  return (
-                    "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")"
-                  );
-                })
-                .attr("id", function (d) {
-                  return "id" + d.text;
-                })
-                .text(function (d) {
-                  return d.text;
-                })
-                .on("mouseover", function (d) {
-                  var id = "id" + d.text;
-                  // Select all with ID and make red
-                  d3.selectAll("#" + id).style("fill", mouseOverCol);
-                  d3.selectAll("#" + id).style("cursor", cursorType);
-                  d3.selectAll("#" + id).style("font-size", function (d) {
-                    return Math.max(80, d.size) + "px";
-                  });
-                })
-                .on("mouseout", function (d) {
-                  var id = "id" + d.text;
-                  // Return other to base colour
-                  d3.selectAll("#" + id).style("fill", "black");
-                  d3.selectAll("#" + id).style("font-size", function (d) {
-                    return d.size + "px";
-                  });
+              .attr("id", function (d) {
+                return "id" + d.text;
+              })
+              .text(function (d) {
+                return d.text;
+              })
+              .on("mouseover", function (d) {
+                var id = "id" + d.text;
+                // Select all with ID and make red
+                d3.selectAll("#" + id).style("fill", mouseOverCol);
+                d3.selectAll("#" + id).style("cursor", cursorType);
+                d3.selectAll("#" + id).style("font-size", function (d) {
+                  return Math.max(mouseOverSize, d.size) + "px";
                 });
-            }
-            function draw2(words) {
-              // Second WC
-              svg2
-                .append("g")
-                .attr(
-                  "transform",
-                  "translate(" +
-                    layout2.size()[0] / 2 +
-                    "," +
-                    layout2.size()[1] / 2 +
-                    ")"
-                )
-                .selectAll("text")
-                .data(words)
-                .enter()
-                .append("text")
-                .style("font-size", function (d) {
+              })
+              .on("mouseout", function (d) {
+                var id = "id" + d.text;
+                // Return other to base colour
+                d3.selectAll("#" + id).style("fill", "black");
+                d3.selectAll("#" + id).style("font-size", function (d) {
                   return d.size + "px";
-                })
-                .style("font-family", font)
-                .attr("text-anchor", "middle")
-                .attr("transform", function (d) {
-                  return (
-                    "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")"
-                  );
-                })
-                .attr("id", function (d) {
-                  return "id" + d.text;
-                })
-                .text(function (d) {
-                  return d.text;
-                })
-                .on("mouseover", function (d) {
-                  var id = "id" + d.text;
-                  // Select and make red
-                  d3.selectAll("#" + id).style("fill", mouseOverCol);
-                  d3.selectAll("#" + id).style("cursor", cursorType);
-                  d3.selectAll("#" + id).style("font-size", function (d) {
-                    return Math.max(80, d.size) + "px";
-                  });
-                  //console.log(d.size);
-                })
-                .on("mouseout", function (d) {
-                  var id = "id" + d.text;
-                  // Return to base colour
-                  d3.selectAll("#" + id).style("fill", "black");
-                  d3.selectAll("#" + id).style("font-size", function (d) {
-                    return d.size + "px";
-                  });
                 });
-            } // Write similarity
-            similarity = Math.round(getSimilarity(countsFreq, userFreq) * 100);
-            document.getElementById("similarity").innerHTML =
-              "Similarity: " + similarity + "%";
+              });
           }
-        );
+          function draw2(words) {
+            // Second WC
+            svg2
+              .append("g")
+              .attr(
+                "transform",
+                "translate(" +
+                  layout2.size()[0] / 2 +
+                  "," +
+                  layout2.size()[1] / 2 +
+                  ")"
+              )
+              .selectAll("text")
+              .data(words)
+              .enter()
+              .append("text")
+              .style("font-size", function (d) {
+                return d.size + "px";
+              })
+              .style("font-family", font)
+              .attr("text-anchor", "middle")
+              .attr("transform", function (d) {
+                return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+              })
+              .attr("id", function (d) {
+                return "id" + d.text;
+              })
+              .text(function (d) {
+                return d.text;
+              })
+              .on("mouseover", function (d) {
+                var id = "id" + d.text;
+                // Select and make red
+                d3.selectAll("#" + id).style("fill", mouseOverCol);
+                d3.selectAll("#" + id).style("cursor", cursorType);
+                d3.selectAll("#" + id).style("font-size", function (d) {
+                  return Math.max(mouseOverSize, d.size) + "px";
+                });
+                //console.log(d.size);
+              })
+              .on("mouseout", function (d) {
+                var id = "id" + d.text;
+                // Return to base colour
+                d3.selectAll("#" + id).style("fill", "black");
+                d3.selectAll("#" + id).style("font-size", function (d) {
+                  return d.size + "px";
+                });
+              });
+          } // Write similarity
+          similarity = Math.round(getSimilarity(countsFreq, userFreq) * 100);
+          document.getElementById("similarity").innerHTML =
+            "Similarity: " + similarity + "%";
+        });
       }
     </script>
   </body>
