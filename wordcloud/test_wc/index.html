@@ -234,6 +234,22 @@
       ======================================
       */
 
+// Gets and colours the similarity
+function makeSimField(countsFreq, userFreq){
+  similarity = Math.round(getSimilarity(countsFreq, userFreq) * 100);
+  if (isNaN(similarity)){
+    return "Uh oh! Something went wrong calculating the similarity."
+  }
+  else if (similarity < 40){
+    return "Similarity: <span style=\"color:green\">" + similarity + "%</span>"
+  } else if (similarity > 41 && similarity < 70){
+    return "Similarity: <span style=\"color:orange\">" + similarity + "%</span>"
+  }
+  else if (similarity > 70){
+    return "Similarity: <span style=\"color:red\">" + similarity + "%</span>"
+  }
+};
+
       // Cleans a user string
       function cleanString(str) {
         let words = str
@@ -612,9 +628,7 @@
                 });
               });
           } // Write similarity
-          similarity = Math.round(getSimilarity(countsFreq, userFreq) * 100);
-          document.getElementById("similarity").innerHTML =
-            "Similarity: " + similarity + "%";
+          document.getElementById("similarity").innerHTML = makeSimField(countsFreq, userFreq)
         });
       }
     </script>
