@@ -448,7 +448,7 @@
 
       // Main function
       function main_f() {
-        d3.json("http://18.214.160.177/vocabs").then(function (data) {
+        d3.json("https://fibfactsdb.tk/vocabs").then(function (data) {
           d3.selectAll("svg").remove();
           const counts = data[1][0].wordcounts;
           var similarity = 0;
