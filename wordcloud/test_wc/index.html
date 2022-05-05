@@ -253,14 +253,21 @@
             "%</span></br>" +
             '<span style="font-size: 14px">This article uses similar vocabulary to fake news. Here\'s how you should proceed:' +
             "<li>Double check the source of the article. Is it credible?</li>" +
-            "<li>" +
-            "" +
-            "" +
+            "<li>Do a quick Google search of the headline. What are people saying about it?</li>" +
+            "<li>Check with a friend or family member. What do they think?</li>" +
             "</span>"
           );
         } else if (similarity > 70) {
           return (
-            'Similarity: <span style="color:red">' + similarity + "%</span>"
+            'Similarity: <span style="color:red">' +
+            similarity +
+            "%</span></br>" +
+            '<span style="font-size: 14px">This article uses very similar vocabulary to fake news. Proceed with caution!' +
+            "<li>Double check the source of the article. Is it credible?</li>" +
+            "<li>Check with a parent or other trusted adult.</li>" +
+            "<li>Think about how you found the article. Was it from social media?</li>" +
+            "<li>Make sure you don't share this without triple checking that it's real.</li>" +
+            "</span>"
           );
         }
       }
