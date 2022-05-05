@@ -71,7 +71,6 @@
       <button class="button-1" type="button" id="submitbutton">Compare!</button>
     </form>
     <p id="similarity" style="font-family: Poppins; font-size: 20px"></p>
-    <ul id="simtips" style="font-family: Poppins; font-size: 14px"></ul>
     <div id="my_dataviz"></div>
     <p style="font-family: Poppins; font-size: 8px">
       Data sources:
@@ -242,11 +241,22 @@
           return "Uh oh! Something went wrong calculating the similarity.";
         } else if (similarity < 41) {
           return (
-            'Similarity: <span style="color:green">' + similarity + "%</span>"
+            'Similarity: <span style="color:green">' +
+            similarity +
+            "%</span> </br>" +
+            '<span style="font-size: 14px">This article has a low similarity, so it\'s probably not fake news.</span>'
           );
         } else if (similarity > 40 && similarity < 70) {
           return (
-            'Similarity: <span style="color:orange">' + similarity + "%</span>"
+            'Similarity: <span style="color:orange">' +
+            similarity +
+            "%</span></br>" +
+            '<span style="font-size: 14px">This article uses similar vocabulary to fake news. Here\'s how you should proceed:' +
+            "<li>Double check the source of the article. Is it credible?</li>" +
+            "<li>" +
+            "" +
+            "" +
+            "</span>"
           );
         } else if (similarity > 70) {
           return (
@@ -662,7 +672,8 @@
                   return d.size + "px";
                 });
               });
-          } // Write similarity
+          }
+          // Write similarity
           document.getElementById("similarity").innerHTML = makeSimField(
             countsFreq,
             userFreq
