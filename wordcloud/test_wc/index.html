@@ -467,7 +467,7 @@
       function main_f() {
         d3.json("https://fibfactsdb.tk/vocabs").then(function (data) {
           d3.selectAll("svg").remove();
-          const counts = data[1][0].wordcounts;
+          const counts = data[0].wordcounts;
           var similarity = 0;
           var ftext = document.getElementById("ftext").value;
           var user_counts = wordCountMap(ftext);

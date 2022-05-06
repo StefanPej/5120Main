@@ -30,7 +30,7 @@ class Users(Resource):
         clean = []
 
         for row in data:
-            vocab = json.loads(row[2])
+            vocab = json.loads(row[3])
             wordcounts = []
             for k, v in vocab.items():
                 wordcounts.append({"word": k, "count": v})
