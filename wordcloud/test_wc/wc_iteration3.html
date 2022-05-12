@@ -47,12 +47,44 @@
       .button-1:focus {
         background-color: #4da2f4;
       }
+      .simtooltip {
+        position: relative;
+        background: #4da2f4;
+        padding: 5px 12px;
+        border-radius: 100%;
+        font-size: 20px;
+        opacity: 1;
+        cursor: help;
+      }
+
+      .simtooltip::before {
+      }
+
+      .simtooltip::after {
+        position: absolute;
+        left: 500%;
+        content: attr(data-tooltip);
+        background: #4da2f4;
+        transform: translateY(-100%);
+        font-size: 14px;
+        margin-left: -150px;
+        width: 300px;
+        border-radius: 10px;
+        color: #fff;
+        padding: 14px;
+        opacity: 0;
+        transition: all ease 0.3s;
+      }
+      .simtooltip:hover::before,
+      .simtooltip:hover::after {
+        opacity: 1;
+      }
     </style>
-<label for="input-source">Choose a source to compare to:</label>
-<select name="input-source" id="input-source">
-  <option value="article">Article</option>
-  <option value="twitter">Twitter User</option>
-</select>
+    <label for="input-source">Choose a source to compare to:</label>
+    <select name="input-source" id="input-source">
+      <option value="article">Article</option>
+      <option value="twitter">Twitter User</option>
+    </select>
 
     <form>
       <label
@@ -72,10 +104,11 @@
         value="Enter your article text here..."
         size="100%"
         onclick="clearText()"
-      /><br /><br />
+      />
+      <br /><br />
       <button class="button-1" type="button" id="submitbutton">Compare!</button>
     </form>
-    <p id="similarity" style="font-family: Poppins; font-size: 20px"></p>
+    <p id="similarity" style="font-family: Poppins; font-size: 30px"></p>
     <div id="my_dataviz"></div>
     <p style="font-family: Poppins; font-size: 8px">
       Data sources:
@@ -93,10 +126,10 @@
     </p>
     <script type="text/javascript">
       /*
-      ======================================
-      GLOBAL VARIABLES
-      ======================================
-      */
+            ======================================
+            GLOBAL VARIABLES
+            ======================================
+            */
       stopwords = [
         "i",
         "me",
@@ -234,10 +267,10 @@
       const mouseOverSize = 70;
 
       /*
-      ======================================
-      FUNCTIONS
-      ======================================
-      */
+            ======================================
+            FUNCTIONS
+            ======================================
+            */
 
       // Gets and colours the similarity
       function makeSimField(countsFreq, userFreq) {
@@ -248,14 +281,14 @@
           return (
             'Similarity: <span style="color:green">' +
             similarity +
-            "%</span> </br>" +
+            '%</span> <span class="simtooltip" data-tooltip="Similarity is calculated by looking at the words found in your article, and the frequency they appear in. If the frequencies are similar to that of the fake news, the similarity score will be high.">      ?</span> </br>' +
             '<span style="font-size: 14px">This article has a low similarity, so it\'s probably not fake news.</span>'
           );
         } else if (similarity > 40 && similarity < 70) {
           return (
             'Similarity: <span style="color:orange">' +
             similarity +
-            "%</span></br>" +
+            '%</span><span class="simtooltip" data-tooltip="Similarity is calculated by looking at the words found in your article, and the frequency they appear in. If the frequencies are similar to that of the fake news, the similarity score will be high.">      ?</span></br>' +
             '<span style="font-size: 14px">This article uses similar vocabulary to fake news. Here\'s how you should proceed:' +
             "<li>Double check the source of the article. Is it credible?</li>" +
             "<li>Do a quick Google search of the headline. What are people saying about it?</li>" +
@@ -266,7 +299,7 @@
           return (
             'Similarity: <span style="color:red">' +
             similarity +
-            "%</span></br>" +
+            '%</span><span class="simtooltip" data-tooltip="Similarity is calculated by looking at the words found in your article, and the frequency they appear in. If the frequencies are similar to that of the fake news, the similarity score will be high.">      ?</span></br>' +
             '<span style="font-size: 14px">This article uses very similar vocabulary to fake news. Proceed with caution!' +
             "<li>Double check the source of the article. Is it credible?</li>" +
             "<li>Check with a parent or other trusted adult.</li>" +
@@ -461,10 +494,10 @@
       }
 
       /*
-      ======================================
-      MAIN FUNCTIONALITY
-      ======================================
-      */
+            ======================================
+            MAIN FUNCTIONALITY
+            ======================================
+            */
 
       d3.selectAll("#submitbutton").on("click", main_f);
 
@@ -506,9 +539,9 @@
           //console.log(words);
           //console.log(words2);
 
-          var margin = { top: 0, right: 0, bottom: 0, left: 0 },
+          var margin = { top: 30, right: 0, bottom: 0, left: 0 },
             width = 450 - margin.left - margin.right,
-            height = 450 - margin.top - margin.bottom;
+            height = 480 - margin.top - margin.bottom;
 
           // Adds SVGs
           var svg = d3
@@ -546,9 +579,9 @@
           svg
             .append("rect")
             .attr("x", 0)
-            .attr("y", 0)
+            .attr("y", 15)
             .attr("width", width)
-            .attr("height", height)
+            .attr("height", height - 15)
             .attr("stroke", "#2c8deb")
             .attr("fill", "none")
             .attr("stroke-width", "3px")
@@ -556,9 +589,9 @@
           svg2
             .append("rect")
             .attr("x", 0)
-            .attr("y", 0)
+            .attr("y", 15)
             .attr("width", width)
-            .attr("height", height)
+            .attr("height", height - 15)
             .attr("stroke", "#2c8deb")
             .attr("fill", "none")
             .attr("stroke-width", "3px")
@@ -597,7 +630,7 @@
                 "translate(" +
                   layout1.size()[0] / 2 +
                   "," +
-                  layout1.size()[1] / 2 +
+                  (layout1.size()[1] + 30) / 2 +
                   ")"
               )
               .selectAll("text")
@@ -624,7 +657,7 @@
                 d3.selectAll("#" + id).style("fill", mouseOverCol);
                 d3.selectAll("#" + id).style("cursor", cursorType);
                 d3.selectAll("#" + id).style("font-size", function (d) {
-                  return Math.max(mouseOverSize, d.size) + "px";
+                  return d.size + 3 + "px";
                 });
               })
               .on("mouseout", function (d) {
@@ -635,6 +668,15 @@
                   return d.size + "px";
                 });
               });
+            svg
+              .append("text")
+              .attr("x", width / 2)
+              .attr("y", 10 - margin.top / 2)
+              .attr("text-anchor", "middle")
+              .style("font-size", "30px")
+              .style("font-family", "poppins")
+              .attr("font-weight", "700")
+              .text("Your Article Vocabulary");
           }
           function draw2(words) {
             // Second WC
@@ -645,7 +687,7 @@
                 "translate(" +
                   layout2.size()[0] / 2 +
                   "," +
-                  layout2.size()[1] / 2 +
+                  (layout2.size()[1] + 30) / 2 +
                   ")"
               )
               .selectAll("text")
@@ -672,7 +714,7 @@
                 d3.selectAll("#" + id).style("fill", mouseOverCol);
                 d3.selectAll("#" + id).style("cursor", cursorType);
                 d3.selectAll("#" + id).style("font-size", function (d) {
-                  return Math.max(mouseOverSize, d.size) + "px";
+                  return d.size + 3 + "px";
                 });
                 //console.log(d.size);
               })
@@ -684,6 +726,15 @@
                   return d.size + "px";
                 });
               });
+            svg2
+              .append("text")
+              .attr("x", width / 2)
+              .attr("y", 10 - margin.top / 2)
+              .attr("text-anchor", "middle")
+              .style("font-size", "30px")
+              .style("font-family", "poppins")
+              .attr("font-weight", "600")
+              .text("Fake News Vocabulary");
           }
           // Write similarity
           document.getElementById("similarity").innerHTML = makeSimField(
