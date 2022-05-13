@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        html,body{
+            text-align: center;
+        }
+        a{
+            color: #fff;
+        }
+        a:hover{
+            color: #fff;
+           text-decoration:underline;
+    
+        }
+        #title{
+            font-size: 18px;
+        }
+        #content{
+            font-size: 13px;
+        }
+        .wrapper{
+            display: grid;
+            grid-gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        }
+        
+        .wrapper .box{
+            width: 350px;
+            margin: auto;
+            position: relative;
+            perspective: 1000px;
+            
+        }
+        .wrapper .box .front-face{
+            background: #fff;
+            height: 220px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: 0px 5px 20px 0px rgba(0, 81,250,0.1);
+            transition: all 0.5s ease;
+            
+        }
+        .box .front-face .icon{
+            height: 80px;
+        }
+        .box .front-face .icon i{
+            font-size: 65px;
+        }
+        
+        .box .front-face span,
+        .box .back-face span{
+            font-size: 22px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .box .front-face .icon i,
+        .box .front-face span{
+            background: linear-gradient(-135deg,#A17BA0,#54A2ED);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+            
+        }
+        
+        .box .back-face{
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: #fff;
+            z-index: 1;
+            height: 220px;
+            width: 100%;
+            padding: 30px;
+            background: linear-gradient(-135deg,#A17BA0,#54A2ED);
+            color: #fff;
+            opacity: 0;
+            transform-style: preserve-3d;
+            backface-visibility: hidden;
+            transform: translateY(110px) rotateX(-90deg);
+            transition: all 0.5s ease;
+            
+            
+        }
+        
+         .box .back-face p{
+            margin-top: 1px;
+            text-align: justify;
+         }
+         
+         .box:hover .back-face{
+             opacity: 1;
+             transform:rotateX(0deg)
+         }
+         
+         .box:hover .front-face{
+             opacity: 0;
+             transform:translateY(-110px) rotateX(90deg);
+         }
+        
+    </style>
+</head>
+<body>
+    
+    <html>
+        <div class="wrapper">
+            <div class="box">
+                 <div class="front-face">
+                    <div class="icon"><i class="fas fa-cloud"></i>
+                    </div>
+                    <span>check</span>
+                </div>
+                <div class="back-face" onclick="window.open('http://www.factorfiction-education.com/wcwizard/')">
+                    <span id="title">
+                        word cloud wizard
+                    </span>
+                    <p id="content"> Found a cool article on the internet but not sure if it’s fib or fact? Check it out with our simple Word Cloud Wizard!
+                    </p>
+                    <a href="http://factorfiction-education.com/wcwizard/">Check it out!</a>
+                </div>
+            
+            </div>
+            
+        </div>
+    </html>
+</body>
+</html>
