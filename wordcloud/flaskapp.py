@@ -21,23 +21,19 @@ app = Flask(__name__)
 api = Api(app)
 
 
-class Users(Resource):
+@app.route("/vocabs/<int:number>")
+def get_vocabs(self):
+    cursor.execute("SELECT * FROM wordcloud WHERE wc_id = number")
+    data = cursor.fetchall()
+    clean = []
 
-    def get(self):
+    for row in data:
+        vocab = json.loads(row[3])
+        wordcounts = []
+        for k, v in vocab.items():
+            wordcounts.append({"word": k, "count": v})
+        clean.append({"source": row[1], "handle": row[2], "wordcounts": wordcounts})
+    return clean, 200
 
-        cursor.execute("SELECT * FROM wordcloud")
-        data = cursor.fetchall()
-        clean = []
-
-        for row in data:
-            vocab = json.loads(row[3])
-            wordcounts = []
-            for k, v in vocab.items():
-                wordcounts.append({"word": k, "count": v})
-            clean.append({"source": row[0], "handle": row[1], "wordcounts": wordcounts})
-        return clean, 200
-
-
-api.add_resource(Users, "/users")
 
 app.run()
