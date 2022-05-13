@@ -22,7 +22,7 @@ api = Api(app)
 
 
 @app.route("/vocabs/<int:number>")
-def get_vocabs(self):
+def get_vocabs():
     cursor.execute("SELECT * FROM wordcloud WHERE wc_id = number")
     data = cursor.fetchall()
     clean = []
