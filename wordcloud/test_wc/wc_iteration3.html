@@ -50,9 +50,9 @@
       .simtooltip {
         position: relative;
         background: #4da2f4;
-        padding: 4px 8px;
+        padding: 3px 6px;
         border-radius: 100%;
-        font-size: 10px;
+        font-size: 8px;
         opacity: 100%;
         cursor: help;
       }
@@ -277,14 +277,14 @@
           return (
             'Similarity: <span style="color:green">' +
             similarity +
-            '%</span> <span class="simtooltip" data-tooltip="Similarity is calculated by looking at the words found in your article, and the frequency they appear in. If the frequencies are similar to that of the fake news, the similarity score will be high.">      ?</span> </br>' +
+            '%</span> <sup class="simtooltip" data-tooltip="Similarity is calculated by looking at the words found in your article, and the frequency they appear in. If the frequencies are similar to that of the fake news, the similarity score will be high.">      ?</sup> </br>' +
             '<span style="font-size: 14px">This article has a low similarity, so it\'s probably not fake news.</span>'
           );
         } else if (similarity > 40 && similarity < 70) {
           return (
             'Similarity: <span style="color:orange">' +
             similarity +
-            '%</span><span class="simtooltip" data-tooltip="Similarity is calculated by looking at the words found in your article, and the frequency they appear in. If the frequencies are similar to that of the fake news, the similarity score will be high.">      ?</span></br>' +
+            '%</span><sup class="simtooltip" data-tooltip="Similarity is calculated by looking at the words found in your article, and the frequency they appear in. If the frequencies are similar to that of the fake news, the similarity score will be high.">      ?</sup></br>' +
             '<span style="font-size: 14px">This article uses similar vocabulary to fake news. Here\'s how you should proceed:' +
             "<li>Double check the source of the article. Is it credible?</li>" +
             "<li>Do a quick Google search of the headline. What are people saying about it?</li>" +
@@ -295,7 +295,7 @@
           return (
             'Similarity: <span style="color:red">' +
             similarity +
-            '%</span><span class="simtooltip" data-tooltip="Similarity is calculated by looking at the words found in your article, and the frequency they appear in. If the frequencies are similar to that of the fake news, the similarity score will be high.">      ?</span></br>' +
+            '%</span><sup class="simtooltip" data-tooltip="Similarity is calculated by looking at the words found in your article, and the frequency they appear in. If the frequencies are similar to that of the fake news, the similarity score will be high.">      ?</sup></br>' +
             '<span style="font-size: 14px">This article uses very similar vocabulary to fake news. Proceed with caution!' +
             "<li>Double check the source of the article. Is it credible?</li>" +
             "<li>Check with a parent or other trusted adult.</li>" +
