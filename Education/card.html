@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        html,body{
+               text-align: center;
+           }
+           .container{
+               align-items: center;
+               font-family: 'Poppins', Sans-Serif;
+               justify-content: space-between;
+           }
+           .card{
+               height: 290px;
+               background: white;
+               width: 350px;
+               margin: 0 20px;
+               box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+               transition: 0.4s;
+               
+           }
+           
+           .card:hover{
+               height: 470px;
+               box-shadow: 5px 5px 5px rgba(0,0,0,0.2);
+           }
+           
+           .card .img{
+               height: 200px;
+               width: 100%
+           }
+           
+           .card .img img{
+               height: 100%;
+               width: 100%;
+               object-fit: cover;
+           }
+           
+           .card .top-text{
+               padding: 5px;
+           }
+           
+           .card .top-text .name{
+               font-size: 25px;
+               font-weight: 600;
+               color: #202020;
+           }
+           .card .top-text p{
+               font-size: 20px;
+               font-weight: 600;
+               color: #e74c3c;
+               line-height: 20px;
+           }
+           
+           .card .bottom-text{
+               padding: 0 20px 10px 20px;
+               margin-top: 5px;
+               background: white;
+               opacity: 0;
+               visibility: hidden;
+               transition: 0.1s;
+           }
+           .card:hover .bottom-text{
+               opacity: 1;
+               visibility: visible;
+           }
+           
+           .card .bottom-text .text{
+              text-align: justify
+           }
+           
+           .card .bottom-text .btn{
+              margin: 10px 0;
+           }
+           
+           .card .bottom-text .btn a{
+              text-decoration: none;
+              background: #e74c3c;
+              color: #f2f2f2;
+              padding: 5px 8px;
+              border-radius: 30px;
+              display: inline-flex;
+              transition: 0.2s;
+              
+           }
+           
+           .card .bottom-text .btn a:hover{
+              transform: scale(0.9);
+              
+              
+              
+           }
+       </style>
+</head>
+<body>
+    
+       
+       <html>
+           <div class='container'>
+               <div class="card">
+                   <div class="img">
+                       <img src="https://factorfiction-education.com/wp-content/uploads/2022/05/dodont.png">
+                   </div>
+                   
+                   <div class="top-text">
+                       <div class="name">DO's and DON'Ts！</div>
+       
+                   </div>
+                   
+                   <div class="bottom-text">
+                       <div class="text">Not sure what to do when you come across some porkies on the internet? Don't worry, check out our simple DO's and DON'Ts list for a quick answer!</div>
+                       <div class="btn">
+                           <a href="https://factorfiction-education.com/do-and-dont/">Let's go</a>
+                       </div>
+                   </div>
+                   
+               </div>
+               
+           </div>
+       </html>
+</body>
+</html>
