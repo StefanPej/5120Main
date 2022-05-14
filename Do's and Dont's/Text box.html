@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .container{
+            background: #fff;
+            /*padding-bottom: 70px;*/
+            /*display: flex;*/
+            align-items: center;
+            justify-content: center;
+            min-height: 10vh
+            /*width: 100px;*/
+            }
+        
+        .container section{
+            widows: 0px;
+            margin: 5px;
+            /*box-shadow: 0 5px 10px #3334;*/
+    
+        }
+        details{
+             padding-bottom: 15px;
+        }
+        /*#s1{*/
+        /*    padding-bottom: 10px;*/
+        /*}*/
+        
+        .container section details summary{
+            padding: 15px;
+            /*background: #e9e9e9;*/
+            background: #F5F5F5;
+            color: #000000;
+            border: 1px solid #444;
+            position: relative;
+            list-style: none;
+            outline: none;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold
+            
+        }
+        .container section details p{
+            font-size: 15px;
+            padding: 15px;
+            color: #444;
+            background: #fff;
+        }
+        .container section details summary::after{
+            content: '+';
+            position: absolute;
+            /*top: 50%;*/
+            /*margin-top: -50px;*/
+            top:1px;
+            right: 15px;
+            font-size: 30px;
+            color: #7196EB;
+            transition: .2s linear;
+            
+        }
+        .container section details[open] summary::after{
+            transform: rotate(135deg);
+    
+        }
+        .container section details[open] summary{
+            /*background: #d6e2ff;*/
+            background: #E7EEFF;
+            color: #255CDD;
+            font-weight: bolder;
+        }
+        .container section details[open] p{
+            background: #F5F5F5;
+        }
+    
+        </style>
+</head>
+<body>
+    
+    <div class="container"
+       background = #00cccc;>
+        <section >
+            <details id="s1">
+                <summary>
+                       If you think the news is fiction, then break the chain of transmission from you. 
+                </summary>
+                <p>
+                Maybe it is hard for you to break the chain of spread, especially when everyone around you is sharing the news, but breaking it is correct. And if it's possible, you can tell your friends to stop too.
+                </p>
+            </details>
+            <details>
+                <summary>
+                Take a moment to check the facts before spreading “interesting” or “horrific” news.
+                </summary>
+                <p>
+                    People often share what they think is interesting or surprising, but they may not realise that what they are sharing is disinformation.
+                </p>
+            </details>
+            <details>
+                <summary>
+                    <b>
+                       Look for the sources of the information. Who wrote this? When was it written? Where is this posted? 
+                    </b>
+                </summary>
+                <p>
+                    Look for the sources of the information. 
+    Who wrote this - is the person writing the article byline or anonymous? When was it written - is this news time-sensitive? Where is this posted - is the website that publishes the information credible?
+                </p>
+            </details>
+            <details>
+                <summary>
+                    When you see something viral with disinformation, you can tell trusted adults, like parents and teachers.
+                </summary>
+                <p>
+                     Once you don't know if the news is true or not, you can ask an adult or teacher for help. Their experience can easily help you identify whether this information is correct or incorrect.
+                </p>
+            </details>
+            <details>
+                <summary>
+                   Ask for experts and authority.
+                </summary>
+                <p>
+                   If you encounter some professional news that even an adult can't distinguish, you can turn to experts or authorities in this field on the internet. Once they get back to you, it's easy to tell if the news is correct.
+                </p>
+            </details>
+        </section>
+    </div>
+    
+    
+</body>
+</html>
