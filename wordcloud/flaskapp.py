@@ -21,9 +21,9 @@ app = Flask(__name__)
 api = Api(app)
 
 
-@app.route("/vocabs/<int:number>")
-def get_vocabs():
-    cursor.execute("SELECT * FROM wordcloud WHERE wc_id = number")
+@app.route("/vocabs/<str:number>")
+def get_vocabs(number):
+    cursor.execute(f"SELECT * FROM wordcloud WHERE wc_id = {str(number)}")
     data = cursor.fetchall()
     clean = []
 
@@ -32,8 +32,15 @@ def get_vocabs():
         wordcounts = []
         for k, v in vocab.items():
             wordcounts.append({"word": k, "count": v})
-        clean.append({"source": row[1], "handle": row[2], "wordcounts": wordcounts})
+        clean.append(
+            {"source": row[1], "handle": row[2], "wordcounts": wordcounts})
     return clean, 200
 
 
-app.run()
+@app.route("/test/<str:name>")
+def test(name):
+    return name
+
+
+if __name__ == '__main__':
+    app.run()
