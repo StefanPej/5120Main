@@ -21,26 +21,41 @@ app = Flask(__name__)
 api = Api(app)
 
 
-@app.route("/vocabs/<str:number>")
-def get_vocabs(number):
-    cursor.execute(f"SELECT * FROM wordcloud WHERE wc_id = {str(number)}")
-    data = cursor.fetchall()
-    clean = []
+class Users(Resource):
 
-    for row in data:
-        vocab = json.loads(row[3])
-        wordcounts = []
-        for k, v in vocab.items():
-            wordcounts.append({"word": k, "count": v})
-        clean.append(
-            {"source": row[1], "handle": row[2], "wordcounts": wordcounts})
-    return clean, 200
+    def get(self):
+
+        cursor.execute("SELECT * FROM wordcloud")
+        data = cursor.fetchall()
+        clean = []
+
+        for row in data:
+            vocab = json.loads(row[3])
+            wordcounts = []
+            for k, v in vocab.items():
+                wordcounts.append({"word": k, "count": v})
+            clean.append({"source": row[1], "handle": row[2], "wordcounts": wordcounts})
+        return clean, 200
 
 
-@app.route("/test/<str:name>")
-def test(name):
-    return name
+class VocabNoNames(Resource):
 
+    def get(self):
+
+        cursor.execute("SELECT * FROM wordcloud WHERE wc_id = 2")
+        data = cursor.fetchall()
+        clean = []
+
+        for row in data:
+            vocab = json.loads(row[3])
+            wordcounts = []
+            for k, v in vocab.items():
+                wordcounts.append({"word": k, "count": v})
+            clean.append({"source": row[1], "handle": row[2], "wordcounts": wordcounts})
+        return clean, 200
+
+api.add_resource(Users, "/users")
+api.add_resource(VocabNoNames, "/vocabs2")
 
 if __name__ == '__main__':
     app.run()
